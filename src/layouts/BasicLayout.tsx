@@ -61,21 +61,11 @@ const defaultFooterDom = (
     copyright="2019 珠峰实验室出品"
     links={[
       {
-        key: 'Ant Design Pro',
-        title: 'Ant Design Pro',
-        href: 'https://pro.ant.design',
-        blankTarget: true,
-      },
-      {
         key: 'github',
-        title: <GithubOutlined />,
-        href: 'https://github.com/ant-design/ant-design-pro',
-        blankTarget: true,
-      },
-      {
-        key: 'Ant Design',
-        title: 'Ant Design',
-        href: 'https://ant.design',
+        title: <GithubOutlined 
+                title="源码地址"
+              />,
+        href: 'https://github.com/kushu001/cdp-web',
         blankTarget: true,
       },
     ]}
