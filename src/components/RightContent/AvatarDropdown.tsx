@@ -1,11 +1,8 @@
 import React, { useCallback } from 'react';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Menu, Spin } from 'antd';
-import { ClickParam } from 'antd/es/menu';
 import { history, useModel } from 'umi';
-import { getPageQuery } from '@/utils/utils';
 import { outLogin } from '@/services/login';
-
 import { stringify } from 'querystring';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
@@ -19,13 +16,14 @@ export interface GlobalHeaderRightProps {
  */
 const loginOut = async () => {
   await outLogin();
-  const { redirect } = getPageQuery();
+  const { query, pathname } = history.location;
+  const { redirect } = query;
   // Note: There may be security issues, please note
   if (window.location.pathname !== '/user/login' && !redirect) {
     history.replace({
       pathname: '/user/login',
       search: stringify({
-        redirect: window.location.href,
+        redirect: pathname,
       }),
     });
   }
@@ -34,15 +32,23 @@ const loginOut = async () => {
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
   const { initialState, setInitialState } = useModel('@@initialState');
 
-  const onMenuClick = useCallback((event: ClickParam) => {
-    const { key } = event;
-    if (key === 'logout') {
-      setInitialState({ ...initialState, currentUser: undefined });
-      loginOut();
-      return;
-    }
-    history.push(`/account/${key}`);
-  }, []);
+  const onMenuClick = useCallback(
+    (event: {
+      key: React.Key;
+      keyPath: React.Key[];
+      item: React.ReactInstance;
+      domEvent: React.MouseEvent<HTMLElement>;
+    }) => {
+      const { key } = event;
+      if (key === 'logout' && initialState) {
+        setInitialState({ ...initialState, currentUser: undefined });
+        loginOut();
+        return;
+      }
+      history.push(`/account/${key}`);
+    },
+    [],
+  );
 
   const loading = (
     <span className={`${styles.action} ${styles.account}`}>

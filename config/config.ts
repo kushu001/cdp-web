@@ -53,7 +53,14 @@ export default defineConfig({
       path: '/basic',
       name: 'basic',
       icon: 'smile',
-      component: './Welcome',
+      routes: [
+        {
+          path: '/basic/user',
+          name: 'user',
+          icon: 'smile',
+          component: './basic/user_list',
+        },
+      ],
     },
     {
       path: '/admin',
@@ -70,12 +77,12 @@ export default defineConfig({
         },
       ],
     },
-    {
-      name: 'list.table-list',
-      icon: 'table',
-      path: '/list',
-      component: './ListTableList',
-    },
+    // {
+    //   name: 'user.list',
+    //   icon: 'table',
+    //   path: '/userList',
+    //   component: './UserList',
+    // },
     {
       path: '/',
       redirect: '/welcome',

@@ -1,4 +1,4 @@
-export interface TableListItem {
+export interface UserListItem {
   key: number;
   disabled?: boolean;
   href: string;
@@ -13,18 +13,24 @@ export interface TableListItem {
   progress: number;
 }
 
-export interface TableListPagination {
+export interface UserListPagination {
   total: number;
   pageSize: number;
   current: number;
 }
 
-export interface TableListData {
-  list: TableListItem[];
-  pagination: Partial<TableListPagination>;
+export interface UserListData {
+  list: UserListItem[];
+  pagination: Partial<UserListPagination>;
 }
 
-export interface TableListParams {
+export interface UserListParams {
+  sorter?: {
+    [key: string]: string;
+  };
+  filter?: {
+    [key: string]: React.ReactText[];
+  };
   status?: string;
   name?: string;
   desc?: string;
