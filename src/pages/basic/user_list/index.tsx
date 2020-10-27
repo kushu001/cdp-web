@@ -1,12 +1,12 @@
-import { DownOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Dropdown, Menu, message } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import { Button, message, Drawer } from 'antd';
 import React, { useState, useRef } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
+import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-
+import ProDescriptions from '@ant-design/pro-descriptions';
 import CreateForm from './components/CreateForm';
 import UpdateForm, { FormValueType } from './components/UpdateForm';
-import { UserListItem } from './data';
+import { UserListItem } from './data.d';
 import { queryUser, updateRule, addRule, removeRule } from './service';
 
 /**
@@ -76,6 +76,8 @@ const UserList: React.FC<{}> = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [stepFormValues, setStepFormValues] = useState({});
   const actionRef = useRef<ActionType>();
+  const [row, setRow] = useState<UserListItem>();
+  const [selectedRowsState, setSelectedRows] = useState<UserListItem[]>([]);
   const columns: ProColumns<UserListItem>[] = [
     {
       title: '用户名',
@@ -130,46 +132,20 @@ const UserList: React.FC<{}> = () => {
   return (
     <PageContainer>
       <ProTable<UserListItem>
-        headerTitle="用户信息"
+        headerTitle="查询表格"
         actionRef={actionRef}
-        rowKey="key"
-        toolBarRender={(action, { selectedRows }) => [
+        rowKey="id"
+        tableAlertRender={false}
+        search={{
+          labelWidth: 120,
+        }}
+        toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> 新建
           </Button>,
-          selectedRows && selectedRows.length > 0 && (
-            <Dropdown
-              overlay={
-                <Menu
-                  onClick={async (e) => {
-                    if (e.key === 'remove') {
-                      await handleRemove(selectedRows);
-                      action.reload();
-                    }
-                  }}
-                  selectedKeys={[]}
-                >
-                  <Menu.Item key="remove">批量删除</Menu.Item>
-                  <Menu.Item key="approval">批量审批</Menu.Item>
-                </Menu>
-              }
-            >
-              <Button>
-                批量操作 <DownOutlined />
-              </Button>
-            </Dropdown>
-          ),
         ]}
-        tableAlertRender={({ selectedRowKeys, selectedRows }) => (
-          <div>
-            已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> 项&nbsp;&nbsp;
-            <span>
-              服务调用次数总计 {selectedRows.reduce((pre, item) => pre + item.callNo, 0)} 万
-            </span>
-          </div>
-        )}
-        request={(params, sorter, filter) =>
-          queryUser({ ...params, sorter, filter }).then((resp: any) => {
+        request={(params) =>
+          queryUser({ ...params }).then((resp: any) => {
             return {
               data: resp.data.records,
               current: params?.current,
@@ -180,8 +156,31 @@ const UserList: React.FC<{}> = () => {
           })
         }
         columns={columns}
-        rowSelection={{}}
+        rowSelection={{
+          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        }}
       />
+      {selectedRowsState?.length > 0 && (
+        <FooterToolbar
+          extra={
+            <div>
+              已选择 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+            </div>
+          }
+        >
+          <Button
+            type="primary"
+            danger
+            onClick={async () => {
+              await handleRemove(selectedRowsState);
+              setSelectedRows([]);
+              actionRef.current?.reloadAndRest?.();
+            }}
+          >
+            批量删除
+          </Button>
+        </FooterToolbar>
+      )}
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
         <ProTable<UserListItem, UserListItem>
           onSubmit={async (value) => {
@@ -196,7 +195,6 @@ const UserList: React.FC<{}> = () => {
           rowKey="key"
           type="form"
           columns={columns}
-          rowSelection={{}}
         />
       </CreateForm>
       {stepFormValues && Object.keys(stepFormValues).length ? (
@@ -219,6 +217,29 @@ const UserList: React.FC<{}> = () => {
           values={stepFormValues}
         />
       ) : null}
+
+      <Drawer
+        width={600}
+        visible={!!row}
+        onClose={() => {
+          setRow(undefined);
+        }}
+        closable={false}
+      >
+        {row?.name && (
+          <ProDescriptions<UserListItem>
+            column={2}
+            title={row?.name}
+            request={async () => ({
+              data: row || {},
+            })}
+            params={{
+              id: row?.name,
+            }}
+            columns={columns}
+          />
+        )}
+      </Drawer>
     </PageContainer>
   );
 };

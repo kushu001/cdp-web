@@ -3,7 +3,7 @@ import { Settings as LayoutSettings } from '@ant-design/pro-layout';
 export default {
   navTheme: 'light',
   // 拂晓蓝
-  primaryColor: '#1890ff',
+  primaryColor: '#D01E22',
   layout: 'mix',
   contentWidth: 'Fluid',
   fixedHeader: false,
@@ -15,6 +15,7 @@ export default {
   },
   title: 'Chomolungma Development Plantform',
   pwa: false,
+  logo: '/logo.png',
   iconfontUrl: '',
 } as LayoutSettings & {
   pwa: boolean;

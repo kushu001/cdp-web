@@ -52,7 +52,7 @@ export default defineConfig({
     {
       path: '/basic',
       name: 'basic',
-      icon: 'smile',
+      icon: 'AppstoreOutlined',
       routes: [
         {
           path: '/basic/user',
@@ -60,6 +60,12 @@ export default defineConfig({
           icon: 'smile',
           component: './basic/user_list',
         },
+        // {
+        //   path: '/basic/baseTable',
+        //   name: 'user',
+        //   icon: 'UserOutlined',
+        //   component: './ListTableList',
+        // },
       ],
     },
     {

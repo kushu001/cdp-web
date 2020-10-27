@@ -10,7 +10,7 @@ export default {
       prefix: (
         <UserOutlined
           style={{
-            color: '#1890ff',
+            color: '#D01E22',
           }}
           className={styles.prefixIcon}
         />

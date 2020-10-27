@@ -9,9 +9,9 @@ import {
   ProFormDateTimePicker,
 } from '@ant-design/pro-form';
 
-import { TableListItem } from '../data.d';
+import { UserListItem } from '../data.d';
 
-export interface FormValueType extends Partial<TableListItem> {
+export interface FormValueType extends Partial<UserListItem> {
   target?: string;
   template?: string;
   type?: string;
@@ -23,7 +23,7 @@ export interface UpdateFormProps {
   onCancel: (flag?: boolean, formVals?: FormValueType) => void;
   onSubmit: (values: FormValueType) => Promise<void>;
   updateModalVisible: boolean;
-  values: Partial<TableListItem>;
+  values: Partial<UserListItem>;
 }
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => (
