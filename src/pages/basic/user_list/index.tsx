@@ -7,7 +7,7 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import CreateForm from './components/CreateForm';
 import UpdateForm, { FormValueType } from './components/UpdateForm';
 import { UserListItem } from './data.d';
-import { queryUser, updateRule, addRule, removeRule } from './service';
+import { queryUser, updateRule, addUser, removeRule } from './service';
 
 /**
  * 添加节点
@@ -16,7 +16,7 @@ import { queryUser, updateRule, addRule, removeRule } from './service';
 const handleAdd = async (fields: UserListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addRule({ ...fields });
+    await addUser({ ...fields });
     hide();
     message.success('添加成功');
     return true;

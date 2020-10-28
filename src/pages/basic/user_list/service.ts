@@ -17,12 +17,11 @@ export async function removeRule(params: { key: number[] }) {
   });
 }
 
-export async function addRule(params: UserListItem) {
-  return request('/api/rule', {
+export async function addUser(params: UserListItem) {
+  return request('/api/v1/user', {
     method: 'POST',
     data: {
       ...params,
-      method: 'post',
     },
   });
 }

@@ -13,7 +13,7 @@ export default {
     locale: true,
     defaultOpenAll: true,
   },
-  title: 'Chomolungma Development Plantform',
+  title: 'Chomolungma Development Platform',
   pwa: false,
   logo: '/logo.png',
   iconfontUrl: '',

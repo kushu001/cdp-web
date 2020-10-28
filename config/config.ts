@@ -12,7 +12,7 @@ export default defineConfig({
     hmr: true,
   },
   layout: {
-    name: 'Ant Design Pro',
+    name: 'Chomolungma Development Platform',
     locale: true,
     siderWidth: 208,
   },
