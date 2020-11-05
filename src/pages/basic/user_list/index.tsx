@@ -33,8 +33,9 @@ const handleRemove = async (selectedRows: UserListItem[]) => {
 const UserList: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [editModalVisible, handleEditModalVisible] = useState<boolean>(false);
+  const [viewModalVisible, handleViewModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<UserListItem>();
+  const [user, setUser] = useState<UserListItem>();
   const [selectedRowsState, setSelectedRows] = useState<UserListItem[]>([]);
 
   /**
@@ -99,14 +100,23 @@ const UserList: React.FC<{}> = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: () => (
+      render: (_, record) => (
         <>
           <a
             onClick={() => {
               handleEditModalVisible(true);
+              setUser(record);
             }}
           >
             编辑
+          </a>
+          <a
+            onClick={() => {
+              handleViewModalVisible(true);
+              setUser(record);
+            }}
+          >
+            查看
           </a>
         </>
       ),
@@ -170,24 +180,29 @@ const UserList: React.FC<{}> = () => {
         handleModalVisible={handleModalVisible}
         handleAdd={handleAdd}
       />
-      <EditUser isEditVisible={editModalVisible} handleEditModalVisible={handleEditModalVisible} />
+      <EditUser
+        isEditVisible={editModalVisible}
+        handleEditModalVisible={handleEditModalVisible}
+        user={user}
+      />
       <Drawer
         width={600}
-        visible={!!row}
+        visible={viewModalVisible}
         onClose={() => {
-          setRow(undefined);
+          setUser(undefined);
+          handleViewModalVisible(false);
         }}
         closable={false}
       >
-        {row?.name && (
+        {user?.name && (
           <ProDescriptions<UserListItem>
             column={2}
-            title={row?.name}
+            title={user?.name}
             request={async () => ({
-              data: row || {},
+              data: user || {},
             })}
             params={{
-              id: row?.name,
+              id: user?.name,
             }}
             columns={columns}
           />
