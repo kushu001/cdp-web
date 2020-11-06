@@ -8,6 +8,19 @@ import { queryUser, addUser, removeUser, updateUser } from './service';
 import AddUser from './components/AddUser';
 import EditUser from './components/EditUser';
 
+const status = {
+  0: '新建',
+  1: '正常',
+  2: '禁用',
+  3: '异常',
+};
+
+const gender = {
+  0: '男',
+  1: '女',
+  2: '未知',
+};
+
 /**
  *  删除节点
  * @param selectedRows
@@ -146,7 +159,7 @@ const UserList: React.FC<{}> = () => {
   return (
     <PageContainer>
       <ProTable<UserListItem>
-        headerTitle="查询表格"
+        headerTitle="用户查询"
         actionRef={actionRef}
         rowKey="id"
         tableAlertRender={false}
@@ -195,17 +208,21 @@ const UserList: React.FC<{}> = () => {
           </Button>
         </FooterToolbar>
       )}
-      <AddUser
-        isVisible={createModalVisible}
-        handleModalVisible={handleModalVisible}
-        handleAdd={handleAdd}
-      />
-      <EditUser
-        isEditVisible={editModalVisible}
-        handleEditModalVisible={handleEditModalVisible}
-        handleUpdate={handleUpdate}
-        user={user}
-      />
+      {createModalVisible ? (
+        <AddUser
+          isVisible={createModalVisible}
+          handleModalVisible={handleModalVisible}
+          handleAdd={handleAdd}
+        />
+      ) : null}
+      {editModalVisible ? (
+        <EditUser
+          isEditVisible={editModalVisible}
+          handleEditModalVisible={handleEditModalVisible}
+          handleUpdate={handleUpdate}
+          user={user}
+        />
+      ) : null}
       <Drawer
         width={600}
         visible={viewModalVisible}
@@ -217,23 +234,26 @@ const UserList: React.FC<{}> = () => {
       >
         {user?.name && (
           <>
-            <Row gutter={24}>
+            <Row gutter={[24, 20]} style={{ fontSize: '24px' }}>
+              查看用户信息
+            </Row>
+            <Row gutter={[24, 20]}>
               <Col span={4}>用户名</Col>
               <Col span={8}>{user.name}</Col>
               <Col span={4}>性别</Col>
-              <Col span={8}>{user.gender}</Col>
+              <Col span={8}>{gender[user.gender]}</Col>
             </Row>
-            <Row gutter={24}>
+            <Row gutter={[24, 20]}>
               <Col span={4}>联系电话</Col>
               <Col span={8}>{user.tel}</Col>
               <Col span={4}>联系地址</Col>
               <Col span={8}>{user.addr}</Col>
             </Row>
-            <Row gutter={24}>
+            <Row gutter={[24, 20]}>
               <Col span={4}>公司地址</Col>
               <Col span={8}>{user.company}</Col>
               <Col span={4}>状态</Col>
-              <Col span={8}>{user.status}</Col>
+              <Col span={8}>{status[user.status]}</Col>
             </Row>
           </>
         )}
