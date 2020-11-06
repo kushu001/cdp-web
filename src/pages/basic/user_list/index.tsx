@@ -1,11 +1,10 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Drawer } from 'antd';
+import { Button, message, Drawer, Row, Col } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProDescriptions from '@ant-design/pro-descriptions';
 import { UserListItem } from './data.d';
-import { queryUser, addUser, removeRule } from './service';
+import { queryUser, addUser, removeUser, updateUser } from './service';
 import AddUser from './components/AddUser';
 import EditUser from './components/EditUser';
 
@@ -17,9 +16,7 @@ const handleRemove = async (selectedRows: UserListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
-    });
+    await removeUser(selectedRows.map((row) => row.id).join(','));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -39,7 +36,7 @@ const UserList: React.FC<{}> = () => {
   const [selectedRowsState, setSelectedRows] = useState<UserListItem[]>([]);
 
   /**
-   * 添加节点
+   * 添加用户
    * @param fields
    */
   const handleAdd = async (fields: UserListItem): Promise<boolean> => {
@@ -56,6 +53,28 @@ const UserList: React.FC<{}> = () => {
     } catch (error) {
       hide();
       message.error('添加失败请重试！');
+      return false;
+    }
+  };
+
+  /**
+   * 编辑用户
+   * @param fields
+   */
+  const handleUpdate = async (fields: UserListItem): Promise<boolean> => {
+    const hide = message.loading('正在修改');
+    try {
+      await updateUser({ ...fields });
+      hide();
+      message.success('修改成功');
+      if (actionRef.current) {
+        actionRef.current.reload();
+      }
+      handleEditModalVisible(false);
+      return true;
+    } catch (error) {
+      hide();
+      message.error('修改失败请重试！');
       return false;
     }
   };
@@ -111,6 +130,7 @@ const UserList: React.FC<{}> = () => {
             编辑
           </a>
           <a
+            style={{ marginLeft: '10px' }}
             onClick={() => {
               handleViewModalVisible(true);
               setUser(record);
@@ -183,6 +203,7 @@ const UserList: React.FC<{}> = () => {
       <EditUser
         isEditVisible={editModalVisible}
         handleEditModalVisible={handleEditModalVisible}
+        handleUpdate={handleUpdate}
         user={user}
       />
       <Drawer
@@ -195,17 +216,26 @@ const UserList: React.FC<{}> = () => {
         closable={false}
       >
         {user?.name && (
-          <ProDescriptions<UserListItem>
-            column={2}
-            title={user?.name}
-            request={async () => ({
-              data: user || {},
-            })}
-            params={{
-              id: user?.name,
-            }}
-            columns={columns}
-          />
+          <>
+            <Row gutter={24}>
+              <Col span={4}>用户名</Col>
+              <Col span={8}>{user.name}</Col>
+              <Col span={4}>性别</Col>
+              <Col span={8}>{user.gender}</Col>
+            </Row>
+            <Row gutter={24}>
+              <Col span={4}>联系电话</Col>
+              <Col span={8}>{user.tel}</Col>
+              <Col span={4}>联系地址</Col>
+              <Col span={8}>{user.addr}</Col>
+            </Row>
+            <Row gutter={24}>
+              <Col span={4}>公司地址</Col>
+              <Col span={8}>{user.company}</Col>
+              <Col span={4}>状态</Col>
+              <Col span={8}>{user.status}</Col>
+            </Row>
+          </>
         )}
       </Drawer>
     </PageContainer>

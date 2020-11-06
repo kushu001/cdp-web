@@ -1,16 +1,12 @@
 export interface UserListItem {
-  key: number;
+  id: number;
   disabled?: boolean;
-  href: string;
-  avatar: string;
   name: string;
-  owner: string;
-  desc: string;
-  callNo: number;
-  status: number;
-  updatedAt: Date;
-  createdAt: Date;
-  progress: number;
+  gender: string;
+  tel: string;
+  addr: string;
+  company: string;
+  status: string;
 }
 
 export interface UserListPagination {

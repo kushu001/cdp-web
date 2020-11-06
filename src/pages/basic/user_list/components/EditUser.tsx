@@ -9,10 +9,16 @@ const { Option } = Select;
 interface UserFormProps {
   isEditVisible: boolean;
   handleEditModalVisible: (isVisible: boolean) => void;
+  handleUpdate: (fields: UserListItem) => Promise<boolean>;
   user: UserListItem | undefined;
 }
 
-const EditUser: React.FC<UserFormProps> = ({ isEditVisible, handleEditModalVisible, user }) => {
+const EditUser: React.FC<UserFormProps> = ({
+  isEditVisible,
+  handleEditModalVisible,
+  user,
+  handleUpdate,
+}) => {
   const [gender, setGender] = useState('0');
   const [form] = Form.useForm();
 
@@ -26,6 +32,15 @@ const EditUser: React.FC<UserFormProps> = ({ isEditVisible, handleEditModalVisib
     setGender(e.target.value);
   };
 
+  const handleOk = async (): Promise<boolean> => {
+    let values = await form.validateFields();
+    values = {
+      id: user?.id,
+      ...values,
+    };
+    return handleUpdate(values as UserListItem);
+  };
+
   const formItemLayout = {
     labelCol: { span: 5 },
     wrapperCol: { span: 19 },
@@ -37,6 +52,7 @@ const EditUser: React.FC<UserFormProps> = ({ isEditVisible, handleEditModalVisib
       title="编辑用户"
       width={800}
       onCancel={() => handleEditModalVisible(false)}
+      onOk={handleOk}
       visible={isEditVisible}
     >
       <Form {...formItemLayout} form={form} initialValues={user}>

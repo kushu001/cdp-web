@@ -7,14 +7,8 @@ export async function queryUser(params?: UserListParams) {
   });
 }
 
-export async function removeRule(params: { key: number[] }) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'delete',
-    },
-  });
+export async function removeUser(ids: string) {
+  return request(`/api/v1/user/${ids}`, { method: 'DELETE' });
 }
 
 export async function addUser(params: UserListItem) {
@@ -26,12 +20,11 @@ export async function addUser(params: UserListItem) {
   });
 }
 
-export async function updateRule(params: UserListParams) {
-  return request('/api/rule', {
-    method: 'POST',
+export async function updateUser(params: UserListParams) {
+  return request('/api/v1/user', {
+    method: 'PUT',
     data: {
       ...params,
-      method: 'update',
     },
   });
 }
