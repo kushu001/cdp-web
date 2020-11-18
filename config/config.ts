@@ -60,6 +60,12 @@ export default defineConfig({
           icon: 'smile',
           component: './basic/user_list',
         },
+        {
+          path: '/basic/dict',
+          name: 'dict',
+          icon: 'smile',
+          component: './basic/dict_list',
+        },
         // {
         //   path: '/basic/baseTable',
         //   name: 'user',

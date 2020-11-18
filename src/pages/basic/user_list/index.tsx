@@ -1,5 +1,5 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Drawer, Row, Col } from 'antd';
+import { Button, message, Drawer, Row, Col, Popconfirm, Badge } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -9,10 +9,10 @@ import AddUser from './components/AddUser';
 import EditUser from './components/EditUser';
 
 const status = {
-  0: '新建',
-  1: '正常',
-  2: '禁用',
-  3: '异常',
+  0: { text: '新建', badge: 'default' },
+  1: { text: '正常', badge: 'success' },
+  2: { text: '禁用', badge: 'error' },
+  3: { text: '异常', badge: 'warning' },
 };
 
 const gender = {
@@ -195,17 +195,20 @@ const UserList: React.FC<{}> = () => {
             </div>
           }
         >
-          <Button
-            type="primary"
-            danger
-            onClick={async () => {
+          <Popconfirm
+            title="确认记录删除？"
+            onConfirm={async () => {
               await handleRemove(selectedRowsState);
               setSelectedRows([]);
               actionRef.current?.reloadAndRest?.();
             }}
+            okText="确认"
+            cancelText="取消"
           >
-            批量删除
-          </Button>
+            <Button type="primary" danger>
+              批量删除
+            </Button>
+          </Popconfirm>
         </FooterToolbar>
       )}
       {createModalVisible ? (
@@ -253,7 +256,10 @@ const UserList: React.FC<{}> = () => {
               <Col span={4}>公司地址</Col>
               <Col span={8}>{user.company}</Col>
               <Col span={4}>状态</Col>
-              <Col span={8}>{status[user.status]}</Col>
+              <Col span={8}>
+                <Badge status={status[user.status].badge} />
+                {status[user.status].text}
+              </Col>
             </Row>
           </>
         )}
