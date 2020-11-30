@@ -8,7 +8,7 @@ interface DictFormProps {
   dict?: DictListItem;
 }
 
-const DictForm: React.FC<DictFormProps> = ({ dict }) => {
+const DictItemForm: React.FC<DictFormProps> = ({ dict }) => {
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -30,22 +30,7 @@ const DictForm: React.FC<DictFormProps> = ({ dict }) => {
   };
 
   return (
-    <Card
-      title="字典明细"
-      extra={
-        dict?.name ? (
-          <Row gutter={24}>
-            <Col>
-              <Button type="primary" htmlType="submit">
-                新建子项
-              </Button>
-            </Col>
-          </Row>
-        ) : (
-          <></>
-        )
-      }
-    >
+    <Card title={`字典明细-${dict?.name}`}>
       <Form {...formItemLayout} form={form} layout="horizontal">
         <Item label="名称" name="name">
           <Input />
@@ -73,4 +58,4 @@ const DictForm: React.FC<DictFormProps> = ({ dict }) => {
     </Card>
   );
 };
-export default DictForm;
+export default DictItemForm;

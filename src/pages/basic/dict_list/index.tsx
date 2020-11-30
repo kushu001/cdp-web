@@ -1,8 +1,10 @@
 import React, { Key, useState } from 'react';
-import { Card, Tree, Input, Row, Col } from 'antd';
+import { Card, Tree, Input, Row, Col, Button } from 'antd';
+import { DataNode } from 'antd/lib/tree';
 import { PageContainer } from '@ant-design/pro-layout';
 import DictForm from './components/DictForm';
 import { DictListItem } from './data';
+import DictItemForm from './components/DictItemForm';
 
 const { Search } = Input;
 
@@ -65,6 +67,7 @@ const DictList: React.FC<{}> = () => {
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
   const [dict, setDict] = useState<DictListItem>();
+  const [isCategories, setIsCategories] = useState<boolean>(false);
 
   const onExpand = (expandedKeys1: Key[]) => {
     // if not set autoExpandParent to false, if children expanded, parent can not collapse.
@@ -73,10 +76,16 @@ const DictList: React.FC<{}> = () => {
     setAutoExpandParent(false);
   };
 
-  const onSelect = (selectedKeys1: Key[], info: { selected: boolean; node: {} }) => {
-    setDict({
-      ...info.node,
-    });
+  const onSelect = (selectedKeys1: Key[], info: { selected: boolean; node: DataNode }) => {
+    setIsCategories(true);
+    const dict1: DictListItem = info.node as DictListItem;
+    if (info.selected) {
+      setDict({
+        ...dict1,
+      });
+    } else {
+      setDict({});
+    }
 
     setSelectedKeys(selectedKeys1);
   };
@@ -89,7 +98,18 @@ const DictList: React.FC<{}> = () => {
     <PageContainer>
       <Row gutter={10}>
         <Col span={6}>
-          <Card title="字典项">
+          <Card
+            title="字典项"
+            extra={
+              <Row gutter={24}>
+                <Col>
+                  <Button type="primary" htmlType="submit">
+                    新建
+                  </Button>
+                </Col>
+              </Row>
+            }
+          >
             <Search
               placeholder="请输入"
               allowClear
@@ -110,7 +130,7 @@ const DictList: React.FC<{}> = () => {
           </Card>
         </Col>
         <Col span={18}>
-          <DictForm dict={dict} />
+          {!isCategories ? <DictForm dict={dict} /> : <DictItemForm dict={dict} />}
         </Col>
       </Row>
     </PageContainer>
