@@ -77,7 +77,8 @@ const DictList: React.FC<{}> = () => {
   };
 
   const onSelect = (selectedKeys1: Key[], info: { selected: boolean; node: DataNode }) => {
-    setIsCategories(true);
+    setIsCategories(!!info.node.isLeaf);
+
     const dict1: DictListItem = info.node as DictListItem;
     if (info.selected) {
       setDict({
