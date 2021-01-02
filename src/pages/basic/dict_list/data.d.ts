@@ -1,7 +1,12 @@
 export interface DictListItem {
-  key?: string;
-  title?: string;
+  key: string;
+  title: string;
   name?: string;
+  isLeaf?: boolean;
+  code?: string;
+  sorter?: number;
+  remark?: string;
+  children?: DictListItem[];
 }
 
 export interface UserListPagination {

@@ -1,17 +1,19 @@
-import React, { Key, useState } from 'react';
-import { Card, Tree, Input, Row, Col, Button } from 'antd';
-import { DataNode } from 'antd/lib/tree';
+import React, { Key, MouseEvent, useState } from 'react';
+import { Card, Tree, Input, Row, Col, Button, message } from 'antd';
+import { DataNode, EventDataNode } from 'antd/lib/tree';
+import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import DictForm from './components/DictForm';
 import { DictListItem } from './data';
 import DictItemForm from './components/DictItemForm';
+import styles from './style.less';
 
 const { Search } = Input;
 
 const treeData = [
   {
     title: '性别',
-    key: '1',
+    key: '2',
     name: '性别',
     code: 'GENDER',
     sorter: 1,
@@ -21,23 +23,20 @@ const treeData = [
         title: '男',
         key: '11',
         name: '男',
-        isLeaf: true,
       },
       {
         title: '女',
         key: '12',
-        isLeaf: true,
       },
       {
         title: '未知',
         key: '13',
-        isLeaf: true,
       },
     ],
   },
   {
     title: '状态',
-    key: '2',
+    key: '3',
     name: '状态',
     code: 'STATUS',
     sorter: 2,
@@ -46,12 +45,10 @@ const treeData = [
       {
         title: '正常',
         key: '21',
-        isLeaf: true,
       },
       {
         title: '禁用',
         key: '22',
-        isLeaf: true,
       },
       {
         title: '异常',
@@ -60,14 +57,65 @@ const treeData = [
       },
     ],
   },
+  {
+    title: '状态2',
+    key: '4',
+    name: '状态2',
+    code: 'STATUS2',
+    sorter: 2,
+    remark: '状态2',
+    children: [
+      {
+        title: '正常2',
+        key: '31',
+        isLeaf: true,
+      },
+      {
+        title: '禁用2',
+        key: '32',
+        isLeaf: true,
+      },
+      {
+        title: '异常2',
+        key: '33',
+        isLeaf: true,
+      },
+    ],
+  },
+  {
+    title: '状态3',
+    key: '5',
+    name: '状态3',
+    code: 'STATUS3',
+    sorter: 2,
+    remark: '状态3',
+    children: [
+      {
+        title: '正常3',
+        key: '41',
+        isLeaf: true,
+      },
+      {
+        title: '禁用3',
+        key: '42',
+        isLeaf: true,
+      },
+      {
+        title: '异常3',
+        key: '43',
+        isLeaf: true,
+      },
+    ],
+  },
 ];
 
 const DictList: React.FC<{}> = () => {
-  const [expandedKeys, setExpandedKeys] = useState<Key[]>(['0-0-0', '0-0-1']);
+  const [expandedKeys, setExpandedKeys] = useState<Key[]>(['1']);
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
   const [dict, setDict] = useState<DictListItem>();
   const [isCategories, setIsCategories] = useState<boolean>(false);
+  const [treeDataTest, setTreeDataTest] = useState<DictListItem[]>(treeData);
 
   const onExpand = (expandedKeys1: Key[]) => {
     // if not set autoExpandParent to false, if children expanded, parent can not collapse.
@@ -79,20 +127,139 @@ const DictList: React.FC<{}> = () => {
   const onSelect = (selectedKeys1: Key[], info: { selected: boolean; node: DataNode }) => {
     setIsCategories(!!info.node.isLeaf);
 
-    const dict1: DictListItem = info.node as DictListItem;
+    const node: DictListItem = info.node as DictListItem;
     if (info.selected) {
       setDict({
-        ...dict1,
+        ...node,
       });
     } else {
-      setDict({});
+      setDict({} as DictListItem);
     }
 
     setSelectedKeys(selectedKeys1);
   };
 
+  const onDrop = (info: {
+    node: EventDataNode;
+    dragNode: EventDataNode;
+    dropPosition: number;
+    dropToGap: boolean;
+  }) => {
+    const { key: dropKey, pos }: { key: number | string; pos: string } = info.node;
+    const { key: dragKey }: { key: number | string } = info.dragNode;
+    const dropPos = pos.split('-');
+    const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1]);
+
+    message.info(
+      `dropKey:${dropKey}\ndragKey:${dragKey}\ninfo.node.expanded:${info.node.expanded}`,
+    );
+
+    const loop = (data: DictListItem[], key: string, callback: Function) => {
+      for (let i = 0; i < data.length; i += 1) {
+        if (data[i].key === key) {
+          callback(data[i], i, data);
+          break;
+        }
+        if (data[i].children) {
+          loop(data[i].children as DictListItem[], key, callback);
+        }
+      }
+    };
+
+    if (
+      info.node.expanded && // Is expanded
+      dropPosition === 1
+    ) {
+      return;
+    }
+
+    if (info.node.pos.split('-').length !== info.dragNode.pos.split('-').length) {
+      return;
+    }
+
+    if (
+      dropPosition === 0 &&
+      info.node.pos.split('-').length === info.dragNode.pos.split('-').length
+    ) {
+      return;
+    }
+
+    const data = [...treeDataTest];
+
+    let dragObj: DictListItem = { key: '', title: '' };
+    loop(data, dragKey as string, (item: DictListItem, index: number, arr: DictListItem[]) => {
+      arr.splice(index, 1);
+      dragObj = item;
+    });
+
+    if (!info.dropToGap) {
+      // Drop on the content
+      loop(data, dropKey as string, (item: DictListItem) => {
+        const obj = item;
+
+        obj.children = obj.children || [];
+        //   // where to insert 示例添加到头部，可以是随意位置
+        obj.children.unshift(dragObj);
+      });
+    } else if (
+      (info.node.children || []).length > 0 && // Has children
+      info.node.expanded && // Is expanded
+      dropPosition === 1 // On the bottom gap
+    ) {
+      loop(data, dropKey as string, (item: DictListItem) => {
+        const obj = item;
+        obj.children = obj.children || [];
+        // where to insert 示例添加到头部，可以是随意位置
+        obj.children.unshift(dragObj);
+        // in previous version, we use item.children.push(dragObj) to insert the
+        // item to the tail of the children
+      });
+    } else {
+      let ar: DictListItem[] = [];
+      let i: number = 0;
+      loop(data, dropKey as string, (item: DictListItem, index: number, arr: DictListItem[]) => {
+        ar = arr;
+        i = index;
+      });
+      if (dropPosition === -1) {
+        ar.splice(i, 0, dragObj);
+      } else {
+        ar.splice(i + 1, 0, dragObj);
+      }
+    }
+
+    setTreeDataTest(data);
+  };
+
   const onSearch = (value: string) => {
     return value;
+  };
+
+  const buttonClick = (event: MouseEvent, node: DictListItem) => {
+    const ev = event || window.event;
+    ev.stopPropagation();
+    message.info(node.name);
+  };
+
+  const onRenderNode = (node: DataNode) => {
+    const treeNode: DictListItem = node as DictListItem;
+    return (
+      <Row className={styles.hover} justify="space-between">
+        <Col>{treeNode.title}</Col>
+        <Col>
+          <ArrowUpOutlined
+            title="上移"
+            onClick={(e) => buttonClick(e, treeNode)}
+            className={styles.button}
+          />
+          <ArrowDownOutlined
+            title="下移"
+            onClick={(e) => buttonClick(e, treeNode)}
+            className={styles.button}
+          />
+        </Col>
+      </Row>
+    );
   };
 
   return (
@@ -125,8 +292,17 @@ const DictList: React.FC<{}> = () => {
               autoExpandParent={autoExpandParent}
               onSelect={onSelect}
               selectedKeys={selectedKeys}
-              treeData={treeData}
-              height={200}
+              treeData={treeDataTest}
+              titleRender={onRenderNode}
+              // height={200}
+              draggable
+              // onDragEnter={onDragEnter}
+              onDrop={onDrop}
+              // onDragEnd={onDragEnd}
+              // onDragLeave={onDragLeave}
+              // onDragOver={onDragOver}
+              // onDragStart={onDragStart}
+              blockNode
             />
           </Card>
         </Col>
