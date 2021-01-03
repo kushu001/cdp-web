@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Card, Input, Form, Button, Row, Col } from 'antd';
+import { Card, Input, Form, Button, Row, Col, Switch } from 'antd';
 import { DictListItem } from '../data';
 
 const { Item } = Form;
@@ -55,6 +55,9 @@ const DictForm: React.FC<DictFormProps> = ({ dict }) => {
         </Item>
         <Item label="排序" name="sorter">
           <Input />
+        </Item>
+        <Item label="启动状态" name="status">
+          <Switch checkedChildren="启用" unCheckedChildren="禁用" defaultChecked />
         </Item>
         <Item label="备注" name="remark">
           <Input />
