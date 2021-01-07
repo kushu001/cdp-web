@@ -42,7 +42,7 @@ const DictItemForm: React.FC<DictFormProps> = ({ dict }) => {
           <Input />
         </Item>
         <Item label="启用状态" name="status">
-          <Switch checkedChildren="启用" unCheckedChildren="禁用" defaultChecked />
+          <Switch checkedChildren="启用" unCheckedChildren="禁用" />
         </Item>
         <Item label="备注" name="remark">
           <Input />

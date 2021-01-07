@@ -46,13 +46,51 @@ const treeData = [
         title: '正常',
         name: '正常',
         key: '21',
-        isLeaf: true,
+        children: [
+          {
+            title: '正常',
+            name: '正常',
+            key: '211',
+            isLeaf: true,
+          },
+          {
+            title: '禁用',
+            name: '禁用',
+            key: '212',
+            isLeaf: true,
+          },
+          {
+            title: '异常',
+            name: '异常',
+            key: '213',
+            isLeaf: true,
+          },
+        ],
       },
       {
         title: '禁用',
         name: '禁用',
         key: '22',
-        isLeaf: true,
+        children: [
+          {
+            title: '正常',
+            name: '正常',
+            key: '221',
+            isLeaf: true,
+          },
+          {
+            title: '禁用',
+            name: '禁用',
+            key: '222',
+            isLeaf: true,
+          },
+          {
+            title: '异常',
+            name: '异常',
+            key: '223',
+            isLeaf: true,
+          },
+        ],
       },
       {
         title: '异常',
@@ -148,6 +186,9 @@ const DictList: React.FC<{}> = () => {
     const dragPosit: string = info.dragNode.pos
       .replaceAll('-', '')
       .substr(0, info.dragNode.pos.replaceAll('-', '').length - 1);
+    if (info.node.pos === info.dragNode.pos) {
+      return;
+    }
     if (dragPosit !== dropPosit) {
       if (dropPosition !== 0) {
         return;
@@ -155,6 +196,9 @@ const DictList: React.FC<{}> = () => {
 
       if (dropPosition === 0) {
         if (dragPosit.substr(0, dragPosit.length - 1) !== dropPosit) {
+          return;
+        }
+        if (info.node.pos.replaceAll('-', '') !== dragPosit) {
           return;
         }
       }
@@ -178,19 +222,6 @@ const DictList: React.FC<{}> = () => {
         obj.children = obj.children || [];
         //   // where to insert 示例添加到头部，可以是随意位置
         obj.children.unshift(dragObj);
-      });
-    } else if (
-      (info.node.children || []).length > 0 && // Has children
-      info.node.expanded && // Is expanded
-      dropPosition === 1 // On the bottom gap
-    ) {
-      loop(data, dropKey as string, (item: DictListItem) => {
-        const obj = item;
-        obj.children = obj.children || [];
-        // where to insert 示例添加到头部，可以是随意位置
-        obj.children.unshift(dragObj);
-        // in previous version, we use item.children.push(dragObj) to insert the
-        // item to the tail of the children
       });
     } else {
       let ar: DictListItem[] = [];
