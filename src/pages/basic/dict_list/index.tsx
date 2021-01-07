@@ -13,7 +13,7 @@ const { Search } = Input;
 const treeData = [
   {
     title: '性别',
-    key: '2',
+    key: '1',
     name: '性别',
     code: 'GENDER',
     sorter: 1,
@@ -44,40 +44,20 @@ const treeData = [
     children: [
       {
         title: '正常',
+        name: '正常',
         key: '21',
+        isLeaf: true,
       },
       {
         title: '禁用',
+        name: '禁用',
         key: '22',
+        isLeaf: true,
       },
       {
         title: '异常',
+        name: '异常',
         key: '23',
-        isLeaf: true,
-      },
-    ],
-  },
-  {
-    title: '状态2',
-    key: '4',
-    name: '状态2',
-    code: 'STATUS2',
-    sorter: 2,
-    remark: '状态2',
-    children: [
-      {
-        title: '正常2',
-        key: '31',
-        isLeaf: true,
-      },
-      {
-        title: '禁用2',
-        key: '32',
-        isLeaf: true,
-      },
-      {
-        title: '异常2',
-        key: '33',
         isLeaf: true,
       },
     ],
@@ -150,10 +130,6 @@ const DictList: React.FC<{}> = () => {
     const dropPos = pos.split('-');
     const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1]);
 
-    message.info(
-      `dropKey:${dropKey}\ndragKey:${dragKey}\ninfo.node.expanded:${info.node.expanded}`,
-    );
-
     const loop = (data: DictListItem[], key: string, callback: Function) => {
       for (let i = 0; i < data.length; i += 1) {
         if (data[i].key === key) {
@@ -166,21 +142,23 @@ const DictList: React.FC<{}> = () => {
       }
     };
 
-    if (
-      info.node.expanded && // Is expanded
-      dropPosition === 1
-    ) {
-      return;
-    }
+    const dropPosit: string = info.node.pos
+      .replaceAll('-', '')
+      .substr(0, info.node.pos.replaceAll('-', '').length - 1);
+    const dragPosit: string = info.dragNode.pos
+      .replaceAll('-', '')
+      .substr(0, info.dragNode.pos.replaceAll('-', '').length - 1);
+    if (dragPosit !== dropPosit) {
+      if (dropPosition !== 0) {
+        return;
+      }
 
-    if (info.node.pos.split('-').length !== info.dragNode.pos.split('-').length) {
-      return;
-    }
-
-    if (
-      dropPosition === 0 &&
-      info.node.pos.split('-').length === info.dragNode.pos.split('-').length
-    ) {
+      if (dropPosition === 0) {
+        if (dragPosit.substr(0, dragPosit.length - 1) !== dropPosit) {
+          return;
+        }
+      }
+    } else if (dropPosition === 0) {
       return;
     }
 

@@ -56,7 +56,7 @@ const DictForm: React.FC<DictFormProps> = ({ dict }) => {
         <Item label="排序" name="sorter">
           <Input />
         </Item>
-        <Item label="启动状态" name="status">
+        <Item label="启用状态" name="status">
           <Switch checkedChildren="启用" unCheckedChildren="禁用" defaultChecked />
         </Item>
         <Item label="备注" name="remark">
