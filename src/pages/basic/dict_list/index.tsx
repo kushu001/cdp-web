@@ -18,6 +18,7 @@ const treeData = [
     code: 'GENDER',
     sorter: 1,
     remark: '性别',
+    status: 0,
     children: [
       {
         title: '男',
@@ -186,23 +187,30 @@ const DictList: React.FC<{}> = () => {
     const dragPosit: string = info.dragNode.pos
       .replaceAll('-', '')
       .substr(0, info.dragNode.pos.replaceAll('-', '').length - 1);
+
+    let allow: boolean = true;
     if (info.node.pos === info.dragNode.pos) {
-      return;
+      allow = false;
     }
     if (dragPosit !== dropPosit) {
       if (dropPosition !== 0) {
-        return;
+        allow = false;
       }
 
       if (dropPosition === 0) {
         if (dragPosit.substr(0, dragPosit.length - 1) !== dropPosit) {
-          return;
+          allow = false;
         }
         if (info.node.pos.replaceAll('-', '') !== dragPosit) {
-          return;
+          allow = false;
         }
       }
     } else if (dropPosition === 0) {
+      allow = false;
+    }
+
+    if (!allow) {
+      message.error('只能同级移动！');
       return;
     }
 
@@ -220,7 +228,7 @@ const DictList: React.FC<{}> = () => {
         const obj = item;
 
         obj.children = obj.children || [];
-        //   // where to insert 示例添加到头部，可以是随意位置
+        // where to insert 示例添加到头部，可以是随意位置
         obj.children.unshift(dragObj);
       });
     } else {
@@ -303,14 +311,8 @@ const DictList: React.FC<{}> = () => {
               selectedKeys={selectedKeys}
               treeData={treeDataTest}
               titleRender={onRenderNode}
-              // height={200}
               draggable
-              // onDragEnter={onDragEnter}
               onDrop={onDrop}
-              // onDragEnd={onDragEnd}
-              // onDragLeave={onDragLeave}
-              // onDragOver={onDragOver}
-              // onDragStart={onDragStart}
               blockNode
             />
           </Card>
