@@ -9,18 +9,18 @@ export interface DictListItem {
   children?: DictListItem[];
 }
 
-export interface UserListPagination {
+export interface DictListPagination {
   total: number;
   pageSize: number;
   current: number;
 }
 
-export interface UserListData {
-  list: UserListItem[];
-  pagination: Partial<UserListPagination>;
+export interface DictListData {
+  list: DictListItem[];
+  pagination: Partial<DictListPagination>;
 }
 
-export interface UserListParams {
+export interface DictListParams {
   sorter?: {
     [key: string]: string;
   };

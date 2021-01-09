@@ -1,18 +1,18 @@
 import { request } from 'umi';
-import { UserListParams, DictListItem } from './data';
+import { DictListParams, DictListItem } from './data';
 
-export async function queryUser(params?: UserListParams) {
-  return request('/api/v1/user', {
+export async function queryDict(params?: DictListParams) {
+  return request('/api/v1/dict', {
     params,
   });
 }
 
-export async function removeUser(ids: string) {
-  return request(`/api/v1/user/${ids}`, { method: 'DELETE' });
+export async function removeDict(ids: string) {
+  return request(`/api/v1/dict/${ids}`, { method: 'DELETE' });
 }
 
-export async function addUser(params: DictListItem) {
-  return request('/api/v1/user', {
+export async function addDict(params: DictListItem) {
+  return request('/api/v1/dict', {
     method: 'POST',
     data: {
       ...params,
@@ -20,8 +20,8 @@ export async function addUser(params: DictListItem) {
   });
 }
 
-export async function updateUser(params: UserListParams) {
-  return request('/api/v1/user', {
+export async function updateDict(params: DictListParams) {
+  return request('/api/v1/dict', {
     method: 'PUT',
     data: {
       ...params,
