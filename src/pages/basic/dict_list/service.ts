@@ -20,7 +20,7 @@ export async function addDict(params: DictListItem) {
   });
 }
 
-export async function updateDict(params: DictListParams) {
+export async function updateDict(params: DictListItem) {
   return request('/api/v1/dict', {
     method: 'PUT',
     data: {

@@ -1,11 +1,12 @@
 export interface DictListItem {
+  id?: number;
   key: string;
   title: string;
   name?: string;
   isLeaf?: boolean;
   code?: string;
   sorter?: number;
-  remark?: string;
+  desc?: string;
   children?: DictListItem[];
 }
 

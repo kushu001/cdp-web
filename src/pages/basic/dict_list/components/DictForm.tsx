@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Card, Input, Form, Button, Row, Col, Switch, message } from 'antd';
 import { DictListItem } from '../data';
-import { addDict } from '../service';
+import { addDict, updateDict } from '../service';
 
 const { Item } = Form;
 
@@ -35,17 +35,22 @@ const DictForm: React.FC<DictFormProps> = ({ dict }) => {
   };
 
   const onFinish = async (values: DictListItem) => {
-    console.log('Success:', values);
+    const { id } = values;
+
     try {
-      await addDict({ ...values });
-      message.info('新增成功！');
+      if (id) {
+        await updateDict({ ...values });
+      } else {
+        await addDict({ ...values });
+      }
+      message.info('操作成功！');
     } catch (error) {
-      message.info('新增失败！');
+      message.info('操作失败！');
     }
   };
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
+    message.info('Failed:', errorInfo);
   };
 
   return (
@@ -84,10 +89,10 @@ const DictForm: React.FC<DictFormProps> = ({ dict }) => {
         <Item label="启用状态" name="status" valuePropName="checked">
           <Switch checkedChildren="启用" unCheckedChildren="禁用" />
         </Item>
-        <Item label="备注" name="remark">
+        <Item label="描述" name="desc">
           <Input />
         </Item>
-        <Item name="id" hidden initialValue={1}>
+        <Item name="id" hidden>
           <Input />
         </Item>
         <Row gutter={24}>

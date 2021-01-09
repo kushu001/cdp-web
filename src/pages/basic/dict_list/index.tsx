@@ -14,10 +14,11 @@ const treeData = [
   {
     title: '性别',
     key: '1',
+    id: 2,
     name: '性别',
     code: 'GENDER',
     sorter: 1,
-    remark: '性别',
+    desc: '性别',
     status: 0,
     children: [
       {
@@ -41,7 +42,7 @@ const treeData = [
     name: '状态',
     code: 'STATUS',
     sorter: 2,
-    remark: '状态',
+    desc: '状态',
     children: [
       {
         title: '正常',
@@ -107,7 +108,7 @@ const treeData = [
     name: '状态3',
     code: 'STATUS3',
     sorter: 2,
-    remark: '状态3',
+    desc: '状态3',
     children: [
       {
         title: '正常3',
