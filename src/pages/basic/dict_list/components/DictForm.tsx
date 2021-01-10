@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Card, Input, Form, Button, Row, Col, Switch, message } from 'antd';
 import { DictListItem } from '../data';
-import { addDict, updateDict } from '../service';
+import { addDict, removeDict, updateDict } from '../service';
 
 const { Item } = Form;
 
@@ -53,6 +53,16 @@ const DictForm: React.FC<DictFormProps> = ({ dict }) => {
     message.info('Failed:', errorInfo);
   };
 
+  const onDeleteHandler = async () => {
+    try {
+      await removeDict(String(dict?.id));
+      message.info('删除成功');
+      resetFormHandler();
+    } catch (error) {
+      message.info('删除失败');
+    }
+  };
+
   return (
     <Card
       title="字典明细"
@@ -102,7 +112,9 @@ const DictForm: React.FC<DictFormProps> = ({ dict }) => {
             </Button>
           </Col>
           <Col>
-            <Button danger>删除</Button>
+            <Button danger onClick={onDeleteHandler}>
+              删除
+            </Button>
           </Col>
         </Row>
       </Form>
