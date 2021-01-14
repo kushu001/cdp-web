@@ -1,133 +1,15 @@
-import React, { Key, MouseEvent, useState } from 'react';
+import React, { Key, MouseEvent, useState, useEffect } from 'react';
 import { Card, Tree, Input, Row, Col, Button, message } from 'antd';
 import { DataNode, EventDataNode } from 'antd/lib/tree';
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import DictForm from './components/DictForm';
 import { DictListItem } from './data';
+import { queryDict } from './service';
 import DictItemForm from './components/DictItemForm';
 import styles from './style.less';
 
 const { Search } = Input;
-
-const treeData = [
-  {
-    title: '性别',
-    key: '1',
-    id: 2,
-    name: '性别',
-    code: 'GENDER',
-    sorter: 1,
-    desc: '性别',
-    status: 0,
-    children: [
-      {
-        title: '男',
-        key: '11',
-        name: '男',
-      },
-      {
-        title: '女',
-        key: '12',
-      },
-      {
-        title: '未知',
-        key: '13',
-      },
-    ],
-  },
-  {
-    title: '状态',
-    key: '3',
-    name: '状态',
-    code: 'STATUS',
-    sorter: 2,
-    desc: '状态',
-    children: [
-      {
-        title: '正常',
-        name: '正常',
-        key: '21',
-        children: [
-          {
-            title: '正常',
-            name: '正常',
-            key: '211',
-            isLeaf: true,
-          },
-          {
-            title: '禁用',
-            name: '禁用',
-            key: '212',
-            isLeaf: true,
-          },
-          {
-            title: '异常',
-            name: '异常',
-            key: '213',
-            isLeaf: true,
-          },
-        ],
-      },
-      {
-        title: '禁用',
-        name: '禁用',
-        key: '22',
-        children: [
-          {
-            title: '正常',
-            name: '正常',
-            key: '221',
-            isLeaf: true,
-          },
-          {
-            title: '禁用',
-            name: '禁用',
-            key: '222',
-            isLeaf: true,
-          },
-          {
-            title: '异常',
-            name: '异常',
-            key: '223',
-            isLeaf: true,
-          },
-        ],
-      },
-      {
-        title: '异常',
-        name: '异常',
-        key: '23',
-        isLeaf: true,
-      },
-    ],
-  },
-  {
-    title: '状态3',
-    key: '5',
-    name: '状态3',
-    code: 'STATUS3',
-    sorter: 2,
-    desc: '状态3',
-    children: [
-      {
-        title: '正常3',
-        key: '41',
-        isLeaf: true,
-      },
-      {
-        title: '禁用3',
-        key: '42',
-        isLeaf: true,
-      },
-      {
-        title: '异常3',
-        key: '43',
-        isLeaf: true,
-      },
-    ],
-  },
-];
 
 const DictList: React.FC<{}> = () => {
   const [expandedKeys, setExpandedKeys] = useState<Key[]>(['1']);
@@ -135,7 +17,14 @@ const DictList: React.FC<{}> = () => {
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
   const [dict, setDict] = useState<DictListItem>();
   const [isCategories, setIsCategories] = useState<boolean>(false);
-  const [treeDataTest, setTreeDataTest] = useState<DictListItem[]>(treeData);
+  const [treeDataTest, setTreeDataTest] = useState<DictListItem[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const result = await queryDict();
+      setTreeDataTest(result.data);
+    })();
+  }, []);
 
   const onExpand = (expandedKeys1: Key[]) => {
     // if not set autoExpandParent to false, if children expanded, parent can not collapse.
