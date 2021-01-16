@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
-import { Card, Input, Form, Button, Row, Col, Switch } from 'antd';
+import { Card, Input, Form, Button, Row, Col, Switch, message } from 'antd';
 import { DictListItem } from '../data';
+import { addDictItem, updateDictItem, removeDictItem } from '../service';
 
 const { Item } = Form;
 
@@ -29,9 +30,48 @@ const DictItemForm: React.FC<DictFormProps> = ({ dict }) => {
     },
   };
 
+  const resetFormHandler = () => {
+    form.resetFields();
+  };
+
+  const onFinish = async (values: DictListItem) => {
+    const { id } = values;
+
+    try {
+      if (id) {
+        await updateDictItem({ ...values });
+      } else {
+        await addDictItem({ ...values });
+      }
+      message.info('操作成功！');
+    } catch (error) {
+      message.info('操作失败！');
+    }
+  };
+
+  const onFinishFailed = (errorInfo: any) => {
+    message.info('Failed:', errorInfo);
+  };
+
+  const onDeleteHandler = async () => {
+    try {
+      await removeDictItem(String(dict?.id));
+      message.info('删除成功');
+      resetFormHandler();
+    } catch (error) {
+      message.info('删除失败');
+    }
+  };
+
   return (
     <Card title={`字典明细${dict?.name === undefined ? `` : `-${dict?.name}`}`}>
-      <Form {...formItemLayout} form={form} layout="horizontal">
+      <Form
+        {...formItemLayout}
+        form={form}
+        layout="horizontal"
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+      >
         <Item label="名称" name="name">
           <Input />
         </Item>
@@ -47,6 +87,9 @@ const DictItemForm: React.FC<DictFormProps> = ({ dict }) => {
         <Item label="描述" name="desc">
           <Input />
         </Item>
+        <Item name="id" hidden>
+          <Input />
+        </Item>
         <Row gutter={24}>
           <Col>
             <Button type="primary" htmlType="submit">
@@ -54,7 +97,9 @@ const DictItemForm: React.FC<DictFormProps> = ({ dict }) => {
             </Button>
           </Col>
           <Col>
-            <Button danger>删除</Button>
+            <Button danger onClick={onDeleteHandler}>
+              删除
+            </Button>
           </Col>
         </Row>
       </Form>

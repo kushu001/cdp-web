@@ -7,9 +7,10 @@ const { Item } = Form;
 
 interface DictFormProps {
   dict?: DictListItem;
+  switchCategories: () => void;
 }
 
-const DictForm: React.FC<DictFormProps> = ({ dict }) => {
+const DictForm: React.FC<DictFormProps> = ({ dict, switchCategories }) => {
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -70,7 +71,7 @@ const DictForm: React.FC<DictFormProps> = ({ dict }) => {
         dict?.name ? (
           <Row gutter={24}>
             <Col>
-              <Button type="primary" onClick={resetFormHandler}>
+              <Button type="primary" onClick={switchCategories}>
                 新建子项
               </Button>
             </Col>

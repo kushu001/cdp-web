@@ -17,12 +17,12 @@ const DictList: React.FC<{}> = () => {
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
   const [dict, setDict] = useState<DictListItem>();
   const [isCategories, setIsCategories] = useState<boolean>(false);
-  const [treeDataTest, setTreeDataTest] = useState<DictListItem[]>([]);
+  const [treeData, setTreeData] = useState<DictListItem[]>([]);
 
   useEffect(() => {
     (async () => {
       const result = await queryDict();
-      setTreeDataTest(result.data);
+      setTreeData(result.data);
     })();
   }, []);
 
@@ -104,7 +104,7 @@ const DictList: React.FC<{}> = () => {
       return;
     }
 
-    const data = [...treeDataTest];
+    const data = [...treeData];
 
     let dragObj: DictListItem = { key: '', title: '' };
     loop(data, dragKey as string, (item: DictListItem, index: number, arr: DictListItem[]) => {
@@ -135,7 +135,7 @@ const DictList: React.FC<{}> = () => {
       }
     }
 
-    setTreeDataTest(data);
+    setTreeData(data);
   };
 
   const onSearch = (value: string) => {
@@ -146,6 +146,10 @@ const DictList: React.FC<{}> = () => {
     const ev = event || window.event;
     ev.stopPropagation();
     message.info(node.name);
+  };
+
+  const switchCategories = () => {
+    setIsCategories(!isCategories);
   };
 
   const onRenderNode = (node: DataNode) => {
@@ -199,7 +203,7 @@ const DictList: React.FC<{}> = () => {
               autoExpandParent={autoExpandParent}
               onSelect={onSelect}
               selectedKeys={selectedKeys}
-              treeData={treeDataTest}
+              treeData={treeData}
               titleRender={onRenderNode}
               draggable
               onDrop={onDrop}
@@ -208,7 +212,11 @@ const DictList: React.FC<{}> = () => {
           </Card>
         </Col>
         <Col span={18}>
-          {!isCategories ? <DictForm dict={dict} /> : <DictItemForm dict={dict} />}
+          {!isCategories ? (
+            <DictForm dict={dict} switchCategories={switchCategories} />
+          ) : (
+            <DictItemForm dict={dict} />
+          )}
         </Col>
       </Row>
     </PageContainer>
