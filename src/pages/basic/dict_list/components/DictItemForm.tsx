@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Input, Form, Button, Row, Col, Switch, message } from 'antd';
 import { DictListItem } from '../data';
 import { addDictItem, updateDictItem, removeDictItem } from '../service';
@@ -8,17 +8,21 @@ const { Item } = Form;
 interface DictFormProps {
   dict?: DictListItem;
   dictId?: Number;
+  refreshData: () => void;
 }
 
-const DictItemForm: React.FC<DictFormProps> = ({ dict, dictId }) => {
+const DictItemForm: React.FC<DictFormProps> = ({ dict, dictId, refreshData }) => {
   const [form] = Form.useForm();
+
+  const [dictItemName, setDictItemName] = useState<string>();
 
   useEffect(() => {
     form.resetFields();
     form.setFieldsValue({
       ...dict,
     });
-  });
+    setDictItemName(dict?.name);
+  }, [dict?.name]);
 
   const formItemLayout = {
     labelCol: {
@@ -44,6 +48,7 @@ const DictItemForm: React.FC<DictFormProps> = ({ dict, dictId }) => {
       } else {
         await addDictItem({ ...values }, dictId);
       }
+      refreshData();
       message.info('操作成功！');
     } catch (error) {
       message.info('操作失败！');
@@ -64,8 +69,12 @@ const DictItemForm: React.FC<DictFormProps> = ({ dict, dictId }) => {
     }
   };
 
+  const onChangeDictItemName = ({ target: { value } }: any) => {
+    setDictItemName(value);
+  };
+
   return (
-    <Card title={`字典明细${dict?.name === undefined ? `` : `-${dict?.name}`}`}>
+    <Card title={`字典明细${dictItemName === undefined ? `` : `-${dictItemName}`}`}>
       <Form
         {...formItemLayout}
         form={form}
@@ -74,7 +83,7 @@ const DictItemForm: React.FC<DictFormProps> = ({ dict, dictId }) => {
         onFinishFailed={onFinishFailed}
       >
         <Item label="名称" name="name">
-          <Input />
+          <Input onChange={onChangeDictItemName} />
         </Item>
         <Item label="代码" name="code">
           <Input />

@@ -20,11 +20,13 @@ const DictList: React.FC<{}> = () => {
   const [isCategories, setIsCategories] = useState<boolean>(false);
   const [treeData, setTreeData] = useState<DictListItem[]>([]);
 
+  const refreshTreeData = async () => {
+    const result = await queryDict();
+    setTreeData(result.data);
+  };
+
   useEffect(() => {
-    (async () => {
-      const result = await queryDict();
-      setTreeData(result.data);
-    })();
+    refreshTreeData();
   }, []);
 
   const onExpand = (expandedKeys1: Key[]) => {
@@ -221,9 +223,13 @@ const DictList: React.FC<{}> = () => {
         </Col>
         <Col span={18}>
           {!isCategories ? (
-            <DictForm dict={dict} switchCategories={switchCategories} />
+            <DictForm
+              dict={dict}
+              switchCategories={switchCategories}
+              refreshData={refreshTreeData}
+            />
           ) : (
-            <DictItemForm dictId={dictId} dict={dict} />
+            <DictItemForm dictId={dictId} dict={dict} refreshData={refreshTreeData} />
           )}
         </Col>
       </Row>

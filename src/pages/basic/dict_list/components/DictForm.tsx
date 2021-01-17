@@ -8,9 +8,10 @@ const { Item } = Form;
 interface DictFormProps {
   dict?: DictListItem;
   switchCategories: () => void;
+  refreshData: () => void;
 }
 
-const DictForm: React.FC<DictFormProps> = ({ dict, switchCategories }) => {
+const DictForm: React.FC<DictFormProps> = ({ dict, switchCategories, refreshData }) => {
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -44,6 +45,7 @@ const DictForm: React.FC<DictFormProps> = ({ dict, switchCategories }) => {
       } else {
         await addDict({ ...values });
       }
+      refreshData();
       message.info('操作成功！');
     } catch (error) {
       message.info('操作失败！');
