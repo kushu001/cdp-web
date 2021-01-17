@@ -7,9 +7,10 @@ const { Item } = Form;
 
 interface DictFormProps {
   dict?: DictListItem;
+  dictId?: Number;
 }
 
-const DictItemForm: React.FC<DictFormProps> = ({ dict }) => {
+const DictItemForm: React.FC<DictFormProps> = ({ dict, dictId }) => {
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -41,7 +42,7 @@ const DictItemForm: React.FC<DictFormProps> = ({ dict }) => {
       if (id) {
         await updateDictItem({ ...values });
       } else {
-        await addDictItem({ ...values });
+        await addDictItem({ ...values }, dictId);
       }
       message.info('操作成功！');
     } catch (error) {

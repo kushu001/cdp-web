@@ -33,11 +33,12 @@ export async function removeDictItem(ids: string) {
   return request(`/api/v1/dict/item/${ids}`, { method: 'DELETE' });
 }
 
-export async function addDictItem(params: DictListItem) {
+export async function addDictItem(params: DictListItem, dictId?: Number) {
   return request('/api/v1/dict/item', {
     method: 'POST',
     data: {
       ...params,
+      dict_id: dictId,
     },
   });
 }
@@ -47,7 +48,6 @@ export async function updateDictItem(params: DictListItem) {
     method: 'PUT',
     data: {
       ...params,
-      dict_id: params.id,
     },
   });
 }

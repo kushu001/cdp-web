@@ -16,6 +16,7 @@ const DictList: React.FC<{}> = () => {
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
   const [dict, setDict] = useState<DictListItem>();
+  const [dictId, setDictId] = useState<Number>();
   const [isCategories, setIsCategories] = useState<boolean>(false);
   const [treeData, setTreeData] = useState<DictListItem[]>([]);
 
@@ -150,6 +151,13 @@ const DictList: React.FC<{}> = () => {
 
   const switchCategories = () => {
     setIsCategories(!isCategories);
+    setDictId(dict?.id);
+    setDict({} as DictListItem);
+  };
+
+  const onCreateDict = () => {
+    setIsCategories(!isCategories);
+    setDict({} as DictListItem);
   };
 
   const onRenderNode = (node: DataNode) => {
@@ -182,7 +190,7 @@ const DictList: React.FC<{}> = () => {
             extra={
               <Row gutter={24}>
                 <Col>
-                  <Button type="primary" htmlType="submit">
+                  <Button type="primary" onClick={onCreateDict}>
                     新建
                   </Button>
                 </Col>
@@ -215,7 +223,7 @@ const DictList: React.FC<{}> = () => {
           {!isCategories ? (
             <DictForm dict={dict} switchCategories={switchCategories} />
           ) : (
-            <DictItemForm dict={dict} />
+            <DictItemForm dictId={dictId} dict={dict} />
           )}
         </Col>
       </Row>
