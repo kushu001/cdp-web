@@ -1,5 +1,5 @@
 import React, { Key, MouseEvent, useState, useEffect } from 'react';
-import { Card, Tree, Input, Row, Col, Button, message } from 'antd';
+import { Card, Tree, Row, Col, Button, message } from 'antd';
 import { DataNode, EventDataNode } from 'antd/lib/tree';
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -8,8 +8,6 @@ import { DictListItem } from './data';
 import { queryDict } from './service';
 import DictItemForm from './components/DictItemForm';
 import styles from './style.less';
-
-const { Search } = Input;
 
 const DictList: React.FC<{}> = () => {
   const [expandedKeys, setExpandedKeys] = useState<Key[]>(['1']);
@@ -23,6 +21,7 @@ const DictList: React.FC<{}> = () => {
   const refreshTreeData = async () => {
     const result = await queryDict();
     setTreeData(result.data);
+    setSelectedKeys([]);
   };
 
   useEffect(() => {
@@ -141,10 +140,6 @@ const DictList: React.FC<{}> = () => {
     setTreeData(data);
   };
 
-  const onSearch = (value: string) => {
-    return value;
-  };
-
   const buttonClick = (event: MouseEvent, node: DictListItem) => {
     const ev = event || window.event;
     ev.stopPropagation();
@@ -158,7 +153,7 @@ const DictList: React.FC<{}> = () => {
   };
 
   const onCreateDict = () => {
-    setIsCategories(!isCategories);
+    setIsCategories(false);
     setDict({} as DictListItem);
   };
 
@@ -199,14 +194,6 @@ const DictList: React.FC<{}> = () => {
               </Row>
             }
           >
-            <Search
-              placeholder="请输入"
-              allowClear
-              enterButton="查询"
-              size="large"
-              onSearch={onSearch}
-              style={{ marginBottom: '10px' }}
-            />
             <Tree
               onExpand={onExpand}
               expandedKeys={expandedKeys}
