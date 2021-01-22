@@ -50,5 +50,6 @@ export default {
   'menu.editor.mind': '腦圖編輯器',
   'menu.editor.koni': '拓撲編輯器',
   'menu.basic.user': '用戶列表',
+  'menu.basic.org': '部门列表',
   'menu.basic.dict': '字典列表',
 };

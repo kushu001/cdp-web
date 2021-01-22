@@ -58,13 +58,19 @@ export default defineConfig({
           path: '/basic/user',
           name: 'user',
           icon: 'smile',
-          component: './basic/user_list',
+          component: './basic/user',
+        },
+        {
+          path: '/basic/org',
+          name: 'org',
+          icon: 'smile',
+          component: './basic/org',
         },
         {
           path: '/basic/dict',
           name: 'dict',
           icon: 'smile',
-          component: './basic/dict_list',
+          component: './basic/dict',
         },
         // {
         //   path: '/basic/baseTable',

@@ -3,10 +3,10 @@ import { Button, message, Drawer, Row, Col, Popconfirm, Badge } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import { UserListItem } from './data.d';
-import { queryUser, addUser, removeUser, updateUser } from './service';
-import AddUser from './components/AddUser';
-import EditUser from './components/EditUser';
+import { OrgListItem } from './data';
+import { queryOrg, addOrg, removeOrg, updateOrg } from './service';
+import AddOrg from './components/AddOrg';
+import EditOrg from './components/EditOrg';
 
 const status = {
   0: { text: '新建', badge: 'default' },
@@ -25,11 +25,11 @@ const gender = {
  *  删除节点
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: UserListItem[]) => {
+const handleRemove = async (selectedRows: OrgListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeUser(selectedRows.map((row) => row.id).join(','));
+    await removeOrg(selectedRows.map((row) => row.id).join(','));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -40,22 +40,22 @@ const handleRemove = async (selectedRows: UserListItem[]) => {
   }
 };
 
-const UserList: React.FC<{}> = () => {
+const OrgList: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [editModalVisible, handleEditModalVisible] = useState<boolean>(false);
   const [viewModalVisible, handleViewModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [user, setUser] = useState<UserListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<UserListItem[]>([]);
+  const [user, setOrg] = useState<OrgListItem>();
+  const [selectedRowsState, setSelectedRows] = useState<OrgListItem[]>([]);
 
   /**
    * 添加用户
    * @param fields
    */
-  const handleAdd = async (fields: UserListItem): Promise<boolean> => {
+  const handleAdd = async (fields: OrgListItem): Promise<boolean> => {
     const hide = message.loading('正在添加');
     try {
-      await addUser({ ...fields });
+      await addOrg({ ...fields });
       hide();
       message.success('添加成功');
       if (actionRef.current) {
@@ -74,10 +74,10 @@ const UserList: React.FC<{}> = () => {
    * 编辑用户
    * @param fields
    */
-  const handleUpdate = async (fields: UserListItem): Promise<boolean> => {
+  const handleUpdate = async (fields: OrgListItem): Promise<boolean> => {
     const hide = message.loading('正在修改');
     try {
-      await updateUser({ ...fields });
+      await updateOrg({ ...fields });
       hide();
       message.success('修改成功');
       if (actionRef.current) {
@@ -92,31 +92,22 @@ const UserList: React.FC<{}> = () => {
     }
   };
 
-  const columns: ProColumns<UserListItem>[] = [
+  const columns: ProColumns<OrgListItem>[] = [
     {
-      title: '用户名',
+      title: '部门名称',
       dataIndex: 'name',
     },
     {
-      title: '性别',
-      dataIndex: 'gender',
-      valueEnum: {
-        0: { text: '男' },
-        1: { text: '女' },
-        2: { text: '未知' },
-      },
+      title: '负责人',
+      dataIndex: 'manager',
     },
     {
       title: '联系电话',
       dataIndex: 'tel',
     },
     {
-      title: '联系地址',
-      dataIndex: 'addr',
-    },
-    {
-      title: '公司地址',
-      dataIndex: 'company',
+      title: '排序',
+      dataIndex: 'order',
     },
     {
       title: '状态',
@@ -137,7 +128,7 @@ const UserList: React.FC<{}> = () => {
           <a
             onClick={() => {
               handleEditModalVisible(true);
-              setUser(record);
+              setOrg(record);
             }}
           >
             编辑
@@ -146,7 +137,7 @@ const UserList: React.FC<{}> = () => {
             style={{ marginLeft: '10px' }}
             onClick={() => {
               handleViewModalVisible(true);
-              setUser(record);
+              setOrg(record);
             }}
           >
             查看
@@ -158,7 +149,7 @@ const UserList: React.FC<{}> = () => {
 
   return (
     <PageContainer>
-      <ProTable<UserListItem>
+      <ProTable<OrgListItem>
         headerTitle="用户查询"
         actionRef={actionRef}
         rowKey="id"
@@ -172,7 +163,7 @@ const UserList: React.FC<{}> = () => {
           </Button>,
         ]}
         request={(params) =>
-          queryUser({ ...params }).then((resp: any) => {
+          queryOrg({ ...params }).then((resp: any) => {
             return {
               data: resp.data.records,
               current: params?.current,
@@ -212,14 +203,14 @@ const UserList: React.FC<{}> = () => {
         </FooterToolbar>
       )}
       {createModalVisible ? (
-        <AddUser
+        <AddOrg
           isVisible={createModalVisible}
           handleModalVisible={handleModalVisible}
           handleAdd={handleAdd}
         />
       ) : null}
       {editModalVisible ? (
-        <EditUser
+        <EditOrg
           isEditVisible={editModalVisible}
           handleEditModalVisible={handleEditModalVisible}
           handleUpdate={handleUpdate}
@@ -230,7 +221,7 @@ const UserList: React.FC<{}> = () => {
         width={600}
         visible={viewModalVisible}
         onClose={() => {
-          setUser(undefined);
+          setOrg(undefined);
           handleViewModalVisible(false);
         }}
         closable={false}
@@ -238,7 +229,7 @@ const UserList: React.FC<{}> = () => {
         {user?.name && (
           <>
             <Row gutter={[24, 20]} style={{ fontSize: '24px' }}>
-              查看用户信息
+              查看部门信息
             </Row>
             <Row gutter={[24, 20]}>
               <Col span={4}>用户名</Col>
@@ -268,4 +259,4 @@ const UserList: React.FC<{}> = () => {
   );
 };
 
-export default UserList;
+export default OrgList;
