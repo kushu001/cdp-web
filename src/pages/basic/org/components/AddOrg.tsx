@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { Modal, Form, Input, Row, Col, Radio, Select } from 'antd';
-import { RadioChangeEvent } from 'antd/lib/radio';
+import React from 'react';
+import { Modal, Form, Input, Row, Col, Select } from 'antd';
 import { OrgListItem } from '../data';
 
 const { Item } = Form;
@@ -10,11 +9,11 @@ interface OrgFormProps {
   isVisible: boolean;
   handleModalVisible: (isVisible: boolean) => void;
   handleAdd: (fields: OrgListItem) => Promise<boolean>;
+  orgList: OrgListItem[];
 }
 
 const AddOrg: React.FC<OrgFormProps> = (props) => {
-  const [gender, setGender] = useState('0');
-  const { isVisible, handleModalVisible, handleAdd } = props;
+  const { isVisible, handleModalVisible, handleAdd, orgList } = props;
   const [form] = Form.useForm();
 
   const formItemLayout = {
@@ -25,16 +24,6 @@ const AddOrg: React.FC<OrgFormProps> = (props) => {
   const handleOk = async (): Promise<boolean> => {
     const values = await form.validateFields();
     return handleAdd(values as OrgListItem);
-  };
-
-  const options = [
-    { label: '男', value: '0' },
-    { label: '女', value: '1' },
-    { label: '未知', value: '2' },
-  ];
-
-  const onChange = (e: RadioChangeEvent) => {
-    setGender(e.target.value);
   };
 
   return (
@@ -50,6 +39,17 @@ const AddOrg: React.FC<OrgFormProps> = (props) => {
         <Form {...formItemLayout} form={form}>
           <Row gutter={24}>
             <Col span={12}>
+              <Item label="父部门" name="pid">
+                <Select placeholder="请选择父部门">
+                  {orgList
+                    ? orgList.map((item: OrgListItem) => {
+                        return <Option value={item.id}>{item.name}</Option>;
+                      })
+                    : null}
+                </Select>
+              </Item>
+            </Col>
+            <Col span={12}>
               <Item
                 label="部门名称"
                 name="name"
@@ -58,17 +58,17 @@ const AddOrg: React.FC<OrgFormProps> = (props) => {
                 <Input placeholder="请输入部门名称" />
               </Item>
             </Col>
-            <Col span={12}>
-              <Item
-                label="性别"
-                name="gender"
-                rules={[{ required: true, message: '性别为必填项' }]}
-              >
-                <Radio.Group options={options} onChange={onChange} value={gender} />
-              </Item>
-            </Col>
           </Row>
           <Row gutter={24}>
+            <Col span={12}>
+              <Item
+                label="负责人"
+                name="manager"
+                rules={[{ required: true, message: '负责人为必填项' }]}
+              >
+                <Input placeholder="请输入负责人姓名" />
+              </Item>
+            </Col>
             <Col span={12}>
               <Item
                 label="联系电话"
@@ -78,16 +78,11 @@ const AddOrg: React.FC<OrgFormProps> = (props) => {
                 <Input placeholder="请输入联系电话" />
               </Item>
             </Col>
-            <Col span={12}>
-              <Item label="联系地址" name="addr">
-                <Input placeholder="请输入联系地址" />
-              </Item>
-            </Col>
           </Row>
           <Row gutter={24}>
             <Col span={12}>
-              <Item label="公司地址" name="company">
-                <Input placeholder="请输入公司地址" />
+              <Item label="排序" name="order">
+                <Input placeholder="请输入排序" />
               </Item>
             </Col>
             <Col span={12}>

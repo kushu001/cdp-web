@@ -7,6 +7,10 @@ export async function queryOrg(params?: OrgListParams) {
   });
 }
 
+export async function queryAllOrg() {
+  return request('/api/v1/org/all');
+}
+
 export async function removeOrg(ids: string) {
   return request(`/api/v1/org/${ids}`, { method: 'DELETE' });
 }

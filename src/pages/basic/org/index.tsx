@@ -1,10 +1,10 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, message, Drawer, Row, Col, Popconfirm, Badge } from 'antd';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { OrgListItem } from './data';
-import { queryOrg, addOrg, removeOrg, updateOrg } from './service';
+import { queryOrg, addOrg, removeOrg, updateOrg, queryAllOrg } from './service';
 import AddOrg from './components/AddOrg';
 import EditOrg from './components/EditOrg';
 
@@ -13,12 +13,6 @@ const status = {
   1: { text: '正常', badge: 'success' },
   2: { text: '禁用', badge: 'error' },
   3: { text: '异常', badge: 'warning' },
-};
-
-const gender = {
-  0: '男',
-  1: '女',
-  2: '未知',
 };
 
 /**
@@ -45,8 +39,18 @@ const OrgList: React.FC<{}> = () => {
   const [editModalVisible, handleEditModalVisible] = useState<boolean>(false);
   const [viewModalVisible, handleViewModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [user, setOrg] = useState<OrgListItem>();
+  const [org, setOrg] = useState<OrgListItem>();
+  const [orgList, setOrgList] = useState<OrgListItem[]>([]);
   const [selectedRowsState, setSelectedRows] = useState<OrgListItem[]>([]);
+
+  const refreshData = async () => {
+    const result = await queryAllOrg();
+    setOrgList(result.data);
+  };
+
+  useEffect(() => {
+    refreshData();
+  }, []);
 
   /**
    * 添加用户
@@ -150,7 +154,7 @@ const OrgList: React.FC<{}> = () => {
   return (
     <PageContainer>
       <ProTable<OrgListItem>
-        headerTitle="用户查询"
+        headerTitle="部门查询"
         actionRef={actionRef}
         rowKey="id"
         tableAlertRender={false}
@@ -165,14 +169,11 @@ const OrgList: React.FC<{}> = () => {
         request={(params) =>
           queryOrg({ ...params }).then((resp: any) => {
             return {
-              data: resp.data.records,
-              current: params?.current,
-              pageSize: params?.pageSize,
-              success: resp.code === 200,
-              total: resp.data.total,
+              data: resp.data,
             };
           })
         }
+        pagination={false}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -206,6 +207,7 @@ const OrgList: React.FC<{}> = () => {
         <AddOrg
           isVisible={createModalVisible}
           handleModalVisible={handleModalVisible}
+          orgList={orgList}
           handleAdd={handleAdd}
         />
       ) : null}
@@ -214,7 +216,8 @@ const OrgList: React.FC<{}> = () => {
           isEditVisible={editModalVisible}
           handleEditModalVisible={handleEditModalVisible}
           handleUpdate={handleUpdate}
-          user={user}
+          orgList={orgList}
+          org={org}
         />
       ) : null}
       <Drawer
@@ -226,30 +229,28 @@ const OrgList: React.FC<{}> = () => {
         }}
         closable={false}
       >
-        {user?.name && (
+        {org?.name && (
           <>
             <Row gutter={[24, 20]} style={{ fontSize: '24px' }}>
               查看部门信息
             </Row>
             <Row gutter={[24, 20]}>
-              <Col span={4}>用户名</Col>
-              <Col span={8}>{user.name}</Col>
-              <Col span={4}>性别</Col>
-              <Col span={8}>{gender[user.gender]}</Col>
+              <Col span={4}>部门名称</Col>
+              <Col span={8}>{org.name}</Col>
+              <Col span={4}>负责人</Col>
+              <Col span={8}>{org.manager}</Col>
             </Row>
             <Row gutter={[24, 20]}>
               <Col span={4}>联系电话</Col>
-              <Col span={8}>{user.tel}</Col>
-              <Col span={4}>联系地址</Col>
-              <Col span={8}>{user.addr}</Col>
+              <Col span={8}>{org.tel}</Col>
+              <Col span={4}>排序</Col>
+              <Col span={8}>{org.order}</Col>
             </Row>
             <Row gutter={[24, 20]}>
-              <Col span={4}>公司地址</Col>
-              <Col span={8}>{user.company}</Col>
               <Col span={4}>状态</Col>
               <Col span={8}>
-                <Badge status={status[user.status].badge} />
-                {status[user.status].text}
+                <Badge status={status[org.status].badge} />
+                {status[org.status].text}
               </Col>
             </Row>
           </>
