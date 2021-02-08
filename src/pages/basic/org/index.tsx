@@ -64,6 +64,7 @@ const OrgList: React.FC<{}> = () => {
       message.success('添加成功');
       if (actionRef.current) {
         actionRef.current.reload();
+        refreshData();
       }
       handleModalVisible(false);
       return true;
@@ -86,6 +87,7 @@ const OrgList: React.FC<{}> = () => {
       message.success('修改成功');
       if (actionRef.current) {
         actionRef.current.reload();
+        refreshData();
       }
       handleEditModalVisible(false);
       return true;
@@ -177,6 +179,7 @@ const OrgList: React.FC<{}> = () => {
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+          checkStrictly: false,
         }}
       />
       {selectedRowsState?.length > 0 && (
@@ -235,18 +238,20 @@ const OrgList: React.FC<{}> = () => {
               查看部门信息
             </Row>
             <Row gutter={[24, 20]}>
+              <Col span={4}>父部门名称</Col>
+              <Col span={8}>{orgList.find((item) => item.id === org.pid)?.name}</Col>
               <Col span={4}>部门名称</Col>
               <Col span={8}>{org.name}</Col>
+            </Row>
+            <Row gutter={[24, 20]}>
               <Col span={4}>负责人</Col>
               <Col span={8}>{org.manager}</Col>
-            </Row>
-            <Row gutter={[24, 20]}>
               <Col span={4}>联系电话</Col>
               <Col span={8}>{org.tel}</Col>
-              <Col span={4}>排序</Col>
-              <Col span={8}>{org.order}</Col>
             </Row>
             <Row gutter={[24, 20]}>
+              <Col span={4}>排序</Col>
+              <Col span={8}>{org.order}</Col>
               <Col span={4}>状态</Col>
               <Col span={8}>
                 <Badge status={status[org.status].badge} />

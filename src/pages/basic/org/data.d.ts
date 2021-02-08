@@ -1,5 +1,6 @@
 export interface OrgListItem {
   id: number;
+  pid: number;
   disabled?: boolean;
   name: string;
   manager: string;

@@ -40,10 +40,20 @@ const AddOrg: React.FC<OrgFormProps> = (props) => {
           <Row gutter={24}>
             <Col span={12}>
               <Item label="父部门" name="pid">
-                <Select placeholder="请选择父部门">
+                <Select
+                  showSearch
+                  filterOption={(input, option) => {
+                    return option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                  }}
+                  placeholder="请选择父部门"
+                >
                   {orgList
                     ? orgList.map((item: OrgListItem) => {
-                        return <Option value={item.id}>{item.name}</Option>;
+                        return (
+                          <Option key={item.id} value={item.id}>
+                            {item.name}
+                          </Option>
+                        );
                       })
                     : null}
                 </Select>
