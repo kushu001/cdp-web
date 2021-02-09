@@ -49,7 +49,11 @@ export default {
   'menu.editor.flow': '流程編輯器',
   'menu.editor.mind': '腦圖編輯器',
   'menu.editor.koni': '拓撲編輯器',
+  'menu.basic.menu': '菜單列表',
   'menu.basic.user': '用戶列表',
   'menu.basic.org': '部门列表',
   'menu.basic.dict': '字典列表',
+  'menu.basic.log': '日誌管理',
+  'menu.basic.log.operate': '操作日誌',
+  'menu.basic.log.login': '登錄日誌',
 };

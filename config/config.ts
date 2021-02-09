@@ -55,6 +55,12 @@ export default defineConfig({
       icon: 'AppstoreOutlined',
       routes: [
         {
+          path: '/basic/menu',
+          name: 'menu',
+          icon: 'smile',
+          component: './basic/menu',
+        },
+        {
           path: '/basic/user',
           name: 'user',
           icon: 'smile',
@@ -71,6 +77,25 @@ export default defineConfig({
           name: 'dict',
           icon: 'smile',
           component: './basic/dict',
+        },
+        {
+          path: '/basic/log',
+          name: 'log',
+          icon: 'smile',
+          routes: [
+            {
+              path: '/basic/log/operate',
+              name: 'operate',
+              icon: 'smile',
+              component: './basic/dict',
+            },
+            {
+              path: '/basic/log/login',
+              name: 'login',
+              icon: 'smile',
+              component: './basic/dict',
+            },
+          ],
         },
         // {
         //   path: '/basic/baseTable',
