@@ -10,6 +10,18 @@ export interface OrgListItem {
   status: string;
 }
 
+export interface OrgTreeItem {
+  id?: number;
+  key: string;
+  title: string;
+  name?: string;
+  isLeaf?: boolean;
+  code?: string;
+  sorter?: number;
+  desc?: string;
+  children: OrgTreeItem[];
+}
+
 export interface OrgListPagination {
   total: number;
   pageSize: number;

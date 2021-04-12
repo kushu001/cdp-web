@@ -1,12 +1,15 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Drawer, Row, Col, Popconfirm, Badge } from 'antd';
-import React, { useState, useRef } from 'react';
+import { Button, message, Drawer, Row, Col, Popconfirm, Badge, Card } from 'antd';
+import React, { useState, useRef, useEffect } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { UserListItem } from './data';
 import { queryUser, addUser, removeUser, updateUser } from './service';
 import AddUser from './components/AddUser';
 import EditUser from './components/EditUser';
+import CTree from '@/components/CTree';
+import { queryOrg } from '../org/service';
+import { OrgTreeItem } from '../org/data';
 
 const status = {
   0: { text: '新建', badge: 'default' },
@@ -46,7 +49,14 @@ const UserList: React.FC<{}> = () => {
   const [viewModalVisible, handleViewModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [user, setUser] = useState<UserListItem>();
+  const [org, setOrg] = useState<OrgTreeItem[]>([]);
   const [selectedRowsState, setSelectedRows] = useState<UserListItem[]>([]);
+
+  useEffect(() => {
+    queryOrg().then((res) => {
+      setOrg(res.data);
+    });
+  }, []);
 
   /**
    * 添加用户
@@ -158,35 +168,45 @@ const UserList: React.FC<{}> = () => {
 
   return (
     <PageContainer>
-      <ProTable<UserListItem>
-        headerTitle="用户查询"
-        actionRef={actionRef}
-        rowKey="id"
-        tableAlertRender={false}
-        search={{
-          labelWidth: 120,
-        }}
-        toolBarRender={() => [
-          <Button type="primary" key="add" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建
-          </Button>,
-        ]}
-        request={(params) =>
-          queryUser({ ...params }).then((resp: any) => {
-            return {
-              data: resp.data.records,
-              current: params?.current,
-              pageSize: params?.pageSize,
-              success: resp.code === 200,
-              total: resp.data.total,
-            };
-          })
-        }
-        columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-        }}
-      />
+      <Row gutter={15}>
+        <Col span={5}>
+          <Card>
+            <CTree treeData={org} />
+          </Card>
+        </Col>
+        <Col span={19}>
+          <ProTable<UserListItem>
+            headerTitle="用户查询"
+            actionRef={actionRef}
+            rowKey="id"
+            tableAlertRender={false}
+            search={{
+              labelWidth: 120,
+            }}
+            toolBarRender={() => [
+              <Button type="primary" key="add" onClick={() => handleModalVisible(true)}>
+                <PlusOutlined /> 新建
+              </Button>,
+            ]}
+            request={(params) =>
+              queryUser({ ...params }).then((resp: any) => {
+                return {
+                  data: resp.data.records,
+                  current: params?.current,
+                  pageSize: params?.pageSize,
+                  success: resp.code === 200,
+                  total: resp.data.total,
+                };
+              })
+            }
+            columns={columns}
+            rowSelection={{
+              onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+            }}
+          />
+        </Col>
+      </Row>
+
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={

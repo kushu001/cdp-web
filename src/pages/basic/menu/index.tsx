@@ -1,4 +1,4 @@
-import { PlusOutlined } from '@ant-design/icons';
+import * as Icon from '@ant-design/icons';
 import { Button, message, Drawer, Row, Col, Popconfirm, Badge } from 'antd';
 import React, { useState, useRef, useEffect } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
@@ -14,6 +14,9 @@ const status = {
   2: { text: '禁用', badge: 'error' },
   3: { text: '异常', badge: 'warning' },
 };
+
+const renderIcon = (name: string) =>
+  React.createElement(Icon && (Icon as any)[name], { style: { fontSize: '16px' } });
 
 const MenuList: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
@@ -111,6 +114,9 @@ const MenuList: React.FC<{}> = () => {
     {
       title: '图标',
       dataIndex: 'icon',
+      render: (_, record) => {
+        return <>{renderIcon(record.icon ? record.icon : '')}</>;
+      },
     },
     {
       title: '排序',
@@ -166,7 +172,8 @@ const MenuList: React.FC<{}> = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" key="add" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建
+            {/* <PlusOutlined /> 新建 */}
+            {renderIcon('PlusOutlined')}新建
           </Button>,
         ]}
         request={(params) =>

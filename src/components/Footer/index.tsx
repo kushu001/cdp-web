@@ -4,7 +4,7 @@ import { DefaultFooter } from '@ant-design/pro-layout';
 
 export default () => (
   <DefaultFooter
-    copyright="2020 珠峰科技荣誉出品"
+    copyright={`${new Date().getFullYear()} 珠峰科技荣誉出品`}
     links={[
       {
         key: 'Chomolungma',
