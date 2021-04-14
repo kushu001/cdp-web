@@ -22,11 +22,7 @@ const renderTreeNode = (treeData: OrgTreeItem[]): ReactNode => {
 };
 
 const CTree: React.FC<TreeProps> = ({ treeData }) => {
-  return (
-    <>
-      <Tree>{renderTreeNode(treeData)}</Tree>
-    </>
-  );
+  return <Tree>{renderTreeNode(treeData)}</Tree>;
 };
 
 export default CTree;
