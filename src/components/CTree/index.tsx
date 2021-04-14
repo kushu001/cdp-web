@@ -1,6 +1,6 @@
 import { OrgTreeItem } from '@/pages/basic/org/data';
 import { Tree } from 'antd';
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 const { TreeNode } = Tree;
 
@@ -8,7 +8,7 @@ interface TreeProps {
   treeData: OrgTreeItem[];
 }
 
-const renderTreeNode = (treeData: OrgTreeItem[]): any => {
+const renderTreeNode = (treeData: OrgTreeItem[]): ReactNode => {
   return treeData.map((item) => {
     if (item.children) {
       return (
