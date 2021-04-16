@@ -2,7 +2,7 @@ import { request } from 'umi';
 import { UserListParams, UserListItem } from './data';
 
 export async function queryUser(params?: UserListParams) {
-  return request('/api/v1/user', {
+  return request('/api/v1/user/1', {
     params,
   });
 }
